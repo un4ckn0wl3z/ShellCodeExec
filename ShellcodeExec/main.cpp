@@ -67,11 +67,96 @@ bool InjectDll(const TCHAR * szProcess, const TCHAR * szPath, LAUNCH_METHOD Meth
 	if (!hProc)
 	{
 		DWORD dwErr = GetLastError();
-		printf("OpenProcess failed: 0x%08x\n", dwErr);
+		printf("OpenProcess failed: 0x%08X\n", dwErr);
 		return false;
 	}
 
+	auto len = _tcslen(szPath) * sizeof(TCHAR);
+
+	void * pArg = VirtualAllocEx(hProc, nullptr, len, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+	if (!pArg)
+	{
+		DWORD dwErr = GetLastError();
+		printf("VirtualAllocEx failed: 0x%08X\n", dwErr);
+		CloseHandle(hProc);
+		return false;
+	}
+
+	BOOL bRet = WriteProcessMemory(hProc, pArg, szPath,len,nullptr);
+
+	if (!bRet)
+	{
+		DWORD dwErr = GetLastError();
+		printf("WriteProcessMemory failed: 0x%08X\n", dwErr);
+		VirtualFreeEx(hProc, pArg, 0, MEM_RELEASE);
+		CloseHandle(hProc);
+		return false;
+	}
+
+	f_Routine * p_LoadLibrary = reinterpret_cast<f_Routine*>(GetProcAddressEx(hProc, TEXT("kernel32.dll"), LOAD_LIBRARY_NAME));
+
+
+	if (!p_LoadLibrary)
+	{
+		
+		printf("Search LoadLibrary Failed failed\n");
+		VirtualFreeEx(hProc, pArg, 0, MEM_RELEASE);
+		CloseHandle(hProc);
+		return false;
+	}
+
+	UINT_PTR hDllOut = 0;
+	DWORD last_error = 0;
+	DWORD dwErr = StartRoutine(hProc, p_LoadLibrary, pArg, Method, last_error, hDllOut);
+	if (Method != LM_QueueUserAPC) 
+	{
+		VirtualFreeEx(hProc, pArg, 0, MEM_RELEASE);
+	}
+	CloseHandle(hProc);
+
+
+	if (dwErr)
+	{
+		printf("StartRoutine failed: 0x%08X\n", dwErr);
+		printf("	LastWin32Error: 0x%08X\n", last_error);
+		return false;
+	}
+
+	printf("Success LoadLibrary returned: 0x%p\n", reinterpret_cast<void*>(hDllOut));
+
+	return true;
+
+
+
 }
+
+
+int main()
+{
+	bool bRet = InjectDll(PROCESS_NAME,DLL_PATH,LM_NtCreateThreadEx);
+
+	if (!bRet)
+	{
+		printf("Press enter to exit.\n");
+		std::cin.get();
+
+	}
+	return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
