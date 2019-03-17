@@ -1,10 +1,19 @@
+/*
+C++ SHELLCODE INJECTION
+THANKS GUIDEDHACKING [Broihon]
+RE-WRITTEN BY UN4CKN0WL3Z
+VISIT	> https://guidedhacking.com/
+		> https://hacked.un4ckn0wl3z.xyz/
+*/
+
+
 #include "StartRoutine.h"
 
 #define DLL_PATH_X86 TEXT("C:\\Users\\unk\\Desktop\\x86.dll")
 #define DLL_PATH_X64 TEXT("C:\\Users\\unk\\Desktop\\x64.dll")
 
-#define PROCESS_NAME_X86 TEXT("X86Console - x86.exe")
-#define PROCESS_NAME_X64 TEXT("X64Console - x64.exe")
+#define PROCESS_NAME_X86 TEXT("X86Console.exe")
+#define PROCESS_NAME_X64 TEXT("X64Console.exe")
 
 #define LOAD_LIBRARY_NAME_A "LoadLibraryA"
 #define LOAD_LIBRARY_NAME_W "LoadLibraryW"
@@ -28,7 +37,7 @@ HANDLE GetProcessByName(const TCHAR * szProcName, DWORD dwDesiredAccess = PROCES
 {
 	HANDLE hSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 
-	if (hSnap = INVALID_HANDLE_VALUE)
+	if (hSnap == INVALID_HANDLE_VALUE)
 	{
 		return nullptr;
 	}

@@ -1,3 +1,10 @@
+/*
+C++ SHELLCODE INJECTION
+THANKS GUIDEDHACKING [Broihon]
+RE-WRITTEN BY UN4CKN0WL3Z
+VISIT	> https://guidedhacking.com/
+		> https://hacked.un4ckn0wl3z.xyz/
+*/
 #include "GetProAddress.h"
 
 HINSTANCE GetModuleHandleEx(HANDLE hTargetProc, const TCHAR * lpModuleName)
@@ -39,11 +46,12 @@ HINSTANCE GetModuleHandleEx(HANDLE hTargetProc, const TCHAR * lpModuleName)
 	} while (bRet);
 
 	CloseHandle(hSnap);
+
 	if (!bRet) {
 		return NULL;
 	}
 
-	ME32.hModule;
+	return ME32.hModule;
 
 }
 
@@ -89,7 +97,7 @@ void * GetProcAddressEx(HANDLE hTargetProc, const TCHAR * lpModuleName, const ch
 		return nullptr;
 	}
 
-	if (!ReadProcessMemory(hTargetProc, modBase + pExportEntry->VirtualAddress, export_data, pExportEntry->Size, nullptr));
+	if (!ReadProcessMemory(hTargetProc, modBase + pExportEntry->VirtualAddress, export_data, pExportEntry->Size, nullptr))
 	{
 		delete[] export_data;
 		delete[] pe_header;

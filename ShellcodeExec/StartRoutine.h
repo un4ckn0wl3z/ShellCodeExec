@@ -1,3 +1,10 @@
+/*
+C++ SHELLCODE INJECTION
+THANKS GUIDEDHACKING [Broihon]
+RE-WRITTEN BY UN4CKN0WL3Z
+VISIT	> https://guidedhacking.com/
+		> https://hacked.un4ckn0wl3z.xyz/
+*/
 #pragma once
 #include "GetProAddress.h"
 #include <vector>
@@ -21,10 +28,8 @@ using f_Routine = UINT_PTR(__stdcall*)(void * pArg);
 
 DWORD StartRoutine(HANDLE hTargetProc, f_Routine * pRoutine,void * pArg, LAUNCH_METHOD Method, DWORD & LastWin32Error, UINT_PTR & Out);
 
-using f_NtCreateThreadEx = NTSTATUS(__stdcall*)(HANDLE * pThreadHandleOut, ACCESS_MASK
-	DesiredAccess, HANDLE hTargetProc,
-	void * pRoutine, void * pArg, ULONG Flags, SIZE_T ZeroBits, SIZE_T StackSize,
-	SIZE_T MaxStackSize, void * pAttrListOut);
+using f_NtCreateThreadEx = NTSTATUS(__stdcall*)(HANDLE * pThreadHandleOut, ACCESS_MASK DesiredAccess, void * pAttr, HANDLE hProc, void * pRoutine, void * pArg, ULONG Flags,
+	SIZE_T ZeroBits, SIZE_T StackSize, SIZE_T MaxStackSize, void * pAttrListOut);
 
 struct HookData
 {
